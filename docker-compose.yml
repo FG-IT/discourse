@@ -1,0 +1,90 @@
+version: "3.7"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        GITHUB_USER: xqxiang
+        GITHUB_PASS: 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
+        GITHUB_ACCESS_TOKEN: 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
+        DISCOURSE_REDIS_HOST: 127.0.0.1
+        # DISCOURSE_REDIS_USE_SSL: "true"
+        DISCOURSE_SECRET_KEY_BASE: 08808066c47292ada6dcd374e8dd213ae1b30e562f79172e53e018dc418359213cf887a1bb87c96e16c8b22c936d5d857728497f6d04fefb6903191f66cab6fd
+        DISCOURSE_DB_HOST: 35.192.211.236
+        DISCOURSE_DB_PORT: 5432
+        DISCOURSE_DB_NAME: postgres
+        DISCOURSE_DB_USERNAME: postgres
+        DISCOURSE_DB_PASSWORD: crossmap153
+    environment:
+      - LC_ALL=en_US.UTF-8
+      - LANG=en_US.UTF-8
+      - LANGUAGE=en_US.UTF-8
+      - EMBER_CLI_PROD_ASSETS=1
+      - DISCOURSE_DEFAULT_LOCALE=en
+      - DISCOURSE_HOSTNAME=1829-68-198-222-35.ngrok.io
+      - DISCOURSE_DEVELOPER_EMAILS=neal.wkacc@gmail.com
+      - DISCOURSE_SMTP_ADDRESS=smtp.example.com
+      - DISCOURSE_SMTP_PORT=587
+      - DISCOURSE_SMTP_USER_NAME=user@example.com
+      - DISCOURSE_SMTP_PASSWORD=pa$$word
+      - DISCOURSE_SMTP_ENABLE_START_TLS=true
+      - DISCOURSE_SMTP_DOMAIN=discourse.example.com
+      - DISCOURSE_NOTIFICATION_EMAIL=noreply@discourse.example.com
+      - DISCOURSE_CDN_URL=https://discourse-cdn.example.com
+      # - DISCOURSE_DB_SOCKET=''
+      - DISCOURSE_DB_HOST=db
+      - DISCOURSE_DB_PORT=5432
+      - DISCOURSE_DB_NAME=crossmap_community
+      - DISCOURSE_DB_USERNAME=crossmap
+      - DISCOURSE_DB_PASSWORD=crossmap153
+      - DISCOURSE_REDIS_HOST=redis
+      - DISCOURSE_REDIS_PORT=6379
+      - DISCOURSE_REDIS_DB=0
+      - RAILS_ENV=production
+      - RACK_ENV=production
+      - RAILS_SERVE_STATIC_FILES=true
+      - RAILS_MAX_THREADS=5
+      - WEB_CONCURRENCY=2
+      - GITHUB_USER=xqxiang
+      - GITHUB_PASS=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
+      - GITHUB_ACCESS_TOKEN=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
+    volumes:
+      - .:/app
+      - ../extensions:/extensions
+      - bundler_gems:/usr/local/bundle/
+      - /app/tmp
+    ports:
+      - 3000:3000
+    depends_on:
+      - redis
+      - db
+    command: ["bundle", "exec", "puma", "-C", "config/puma.rb"]
+    container_name: crossmap-community-app
+    networks:
+      - build
+  redis:
+    image: redis:6.2.7-alpine
+    command: redis-server
+    ports:
+      - 6379:6379
+    container_name: crossmap-community-redis
+    networks:
+      - build
+  db:
+    image: postgres:13.7-alpine
+    environment:
+      - POSTGRES_PASSWORD=crossmap153
+    ports:
+      - 5432:5432
+    volumes:
+      - "pg:/var/lib/postgresql/data"
+    container_name: crossmap-community-db
+    networks:
+      - build
+volumes:
+  bundler_gems:
+  pg:
+networks:
+  build: {}
