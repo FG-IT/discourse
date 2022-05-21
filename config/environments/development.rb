@@ -32,6 +32,7 @@ Discourse::Application.configure do
 
   config.assets.debug = false
 
+  config.public_file_server.enabled = true
   config.public_file_server.headers = {
     'Access-Control-Allow-Origin' => '*'
   }
